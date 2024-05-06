@@ -43,17 +43,12 @@ fn main() -> io::Result<()> {
             }
         }
 
-        let mut i = 0;
-        while i < lines.len() {
-            file.write_all(lines[i].as_bytes())?;
-            let _ = file.write_all(b"\n");
-            i += 1;
+        file = File::create(path_file)?;
+
+        for value in &lines {
+            writeln!(file, "{}", value)?;
         }
     }
-
-    /* for el in lines {
-        println!("{}", el);
-    } */
 
     Ok(())
 }
