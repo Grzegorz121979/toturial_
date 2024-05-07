@@ -1,4 +1,0 @@
-pear
-butter
-cherry
-apple

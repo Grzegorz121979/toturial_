@@ -48,6 +48,13 @@ fn main() -> io::Result<()> {
         for value in &lines {
             writeln!(file, "{}", value)?;
         }
+    } else if list[1] == "clear" {
+        file = OpenOptions::new()
+                    .write(true)
+                    .truncate(true)
+                    .open(path_file)?;
+        
+        file.set_len(0)?;
     }
 
     Ok(())
