@@ -1,61 +1,33 @@
-use std::env;
-use std::fs::{File, OpenOptions};
-use std::io::{self, BufRead, BufReader, Read, Write};
+use std::io::{self, Write};
 
-fn main() -> io::Result<()> {
-    let list: Vec<String> = env::args().collect();
-    let mut lines: Vec<String> = Vec::new();
-    let path_file = "list_to_do.txt";
+fn main() {
+    let array: Vec<i32> = vec![3, 2, 5, 8, 1, 4, 2, 7];
+    let mut value = String::new();
 
-    let mut file = OpenOptions::new()
-                            .append(true)
-                            .open(path_file)?;
-    
-    if list[1] == "add" {
-        let mut i = 2;
-        while i < list.len() {
-            file.write_all(list[i].as_bytes())?;
-            let _ = file.write_all(b"\n");
-            i += 1;
-        }
-    } else if list[1] == "print" {
-        file = File::open(path_file)?;
-        let mut reader = BufReader::new(file);
-        let mut contents = String::new();
-        reader.read_to_string(&mut contents)?;
+    print!("Enter a value: ");
+    io::stdout()
+            .flush()
+            .unwrap();
 
-        println!("{}", contents);
-    } else if list[1] == "remove" {
-        file = File::open(path_file)?;
-        let reader = BufReader::new(&file);
+    io::stdin()
+            .read_line(&mut value)
+            .expect("Error");
 
-        for line in reader.lines() {
-            let line = line?;
-            lines.push(line);
-        }
+    let value: i32 = value.trim().parse().expect("Only usize integers");
 
-        for (i, element) in lines.iter().enumerate() {
-            if element == &list[2] {
-                lines.remove(i);
-                break;
-            } else {
-                println!("Error");
-            }
-        }
+    let i = find_index(&array, value);
 
-        file = File::create(path_file)?;
-
-        for value in &lines {
-            writeln!(file, "{}", value)?;
-        }
-    } else if list[1] == "clear" {
-        file = OpenOptions::new()
-                    .write(true)
-                    .truncate(true)
-                    .open(path_file)?;
-        
-        file.set_len(0)?;
+    match i {
+        Some(index) => println!("The element index is: {}", index),
+        None => println!("The element not found"),
     }
+}
 
-    Ok(())
+fn find_index(arr: &[i32], v: i32) -> Option<usize> {
+    for (index, &element) in arr.iter().enumerate() {
+        if v == element {
+            return Some(index);
+        }
+    }
+    None
 }
